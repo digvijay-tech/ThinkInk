@@ -35,4 +35,26 @@ func main() {
 	// task selection
 	selections = "\nSelected Model: " + modelName + "\n" + "Selected Skill: " + skillName + "\n"
 	ui.PrintHeader(selections)
+	selectedTask, err := ui.SelectTask(skillName)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	// generate writing task
+	selections = "\nSelected Model: " + modelName + "\n" + "Selected Skill: " + skillName + "\n" + "Selected Task : " + selectedTask + "\n"
+	ui.PrintHeader(selections)
+
+	task, err := ollama.GenerateTask(modelName, skillName, selectedTask)
+
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Failed to receive reponse from Ollama!")
+		return
+	}
+
+	// task received
+	ui.PrintHeader("\nPlease see the task below:\n\n")
+	fmt.Println(task)
 }

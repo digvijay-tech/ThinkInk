@@ -46,7 +46,12 @@ func SelectModel() (string, error) {
 }
 
 func SelectSkill() (string, error) {
-	skills := []string{"Professional Writing", "Critical Thinking & Behavioral Writing", "Creative & Persuasive Writing", "Academic & Technical Writing"}
+	skills := []string{
+		"Professional Writing",
+		"Critical Thinking & Behavioral Writing",
+		"Creative & Persuasive Writing",
+		"Academic & Technical Writing",
+	}
 
 	prompt := promptui.Select{
 		Label: "What would you like to practice today?",
@@ -60,4 +65,56 @@ func SelectSkill() (string, error) {
 	}
 
 	return selectedSkill, nil
+}
+
+func SelectTask(selectedSkill string) (string, error) {
+	tasksMap := map[string][]string{
+		"Professional Writing": {
+			"Short Memo",
+			"Performance Review Feedback",
+			"Meeting Summary",
+			"Project Proposal",
+			"Resignation Letter",
+			"Cover Letter",
+			"Customer Support Response",
+			"Apology Letter",
+			"Company Announcement",
+			"Fundraising Request",
+		},
+		"Critical Thinking & Behavioral Writing": {
+			"Ethical Dilemma Response",
+			"Crisis Management Statement",
+			"Negotiation Email",
+			"Diversity & Inclusion Statement",
+			"Conflict Resolution Response",
+			"Decision Justification",
+			"Team Motivation Message",
+			"Public Apology Statement",
+		},
+		"Creative & Persuasive Writing": {
+			"Product Review",
+			"Persuasive Argumen",
+			"Storytelling Exercise",
+			"Speech Drafting",
+		},
+		"Academic & Technical Writing": {
+			"Technical Documentation",
+			"Case Study Report",
+			"Lesson Plan",
+			"Policy Drafting",
+		},
+	}
+
+	prompt := promptui.Select{
+		Label: "Select a task from below:",
+		Items: tasksMap[selectedSkill],
+	}
+
+	// running task selection prompt
+	_, selectedTask, err := prompt.Run()
+	if err != nil {
+		return "", errors.New("Task selection canceled!")
+	}
+
+	return selectedTask, nil
 }

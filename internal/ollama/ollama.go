@@ -1,8 +1,10 @@
 package ollama
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -17,6 +19,17 @@ type OllamaModelsReponse struct {
 
 type OllamaModel struct {
 	Name string `json:"name"`
+}
+
+// Ollama Request structure
+type OllamaRequest struct {
+	Model    string              `json:"model"`
+	Messages []map[string]string `json:"messages"`
+}
+
+// Ollama Response structure
+type OllamaResponse struct {
+	Response string `json:"response"`
 }
 
 func IsOllamaRunning() bool {
@@ -61,4 +74,60 @@ func GetOllamaModels() ([]string, error) {
 	}
 
 	return modelnames, nil
+}
+
+func GenerateTask(model, skill, taskType string) (string, error) {
+	// composing a task prompt
+	taskPrompt := fmt.Sprintf(
+		"Create a short writing exercise that helps user practice their %s "+
+			"by writing a short %s. "+
+			"Make sure the task is clear, engaging, and can be completed within 10 minutes.",
+		skill,
+		taskType,
+	)
+
+	// preparing api request payload
+	requestBody := OllamaRequest{
+		Model: model,
+		Messages: []map[string]string{
+			{
+				"role":    "user",
+				"content": taskPrompt,
+			},
+		},
+	}
+
+	jsonData, err := json.Marshal(requestBody)
+	if err != nil {
+		return "", errors.New("Failed to parse json")
+	}
+
+	// sending request to Ollama
+	resp, err := http.Post(url+"api/chat", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return "", errors.New("Failed to connect to Ollama. Ensure it's running with `ollama serve`")
+	}
+
+	defer resp.Body.Close()
+
+	// reading response
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", errors.New("Failed to read response from Ollama")
+	}
+
+	fmt.Println(string(body))
+
+	var ollamaResp OllamaResponse
+	if err := json.Unmarshal(body, &ollamaResp); err != nil {
+		fmt.Println(err)
+		return "", errors.New("Failed to parse Ollama response")
+	}
+
+	// making sure response is not empty
+	if ollamaResp.Response == "" {
+		return "", errors.New("Ollama returned an empty response")
+	}
+
+	return ollamaResp.Response, nil
 }
