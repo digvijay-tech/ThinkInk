@@ -3,6 +3,7 @@ package ui
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/digvijay-tech/ThinkInk/internal/ollama"
@@ -117,4 +118,48 @@ func SelectTask(selectedSkill string) (string, error) {
 	}
 
 	return selectedTask, nil
+}
+
+func ShowLoader(taskDescription string, operation func() (string, error)) (string, error) {
+	// spinner characters to create animation
+	spinner := []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
+
+	// channel to signal when operation is complete
+	done := make(chan bool)
+	var result string
+	var err error
+
+	// run the operation in a goroutine
+	go func() {
+		result, err = operation()
+		done <- true
+	}()
+
+	// spinner loop
+	i := 0
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-done:
+			// clear the line and show completion
+			fmt.Print("\r\033[K") // clear line
+
+			if err != nil {
+				fmt.Printf("%s Failed!\n", taskDescription)
+				return "", err
+			}
+
+			fmt.Printf("%s Done!\n", taskDescription)
+			return result, nil
+		case <-ticker.C:
+			// updating spinner
+			fmt.Print("\r\033[K") // clear line
+
+			cursorText := fmt.Sprintf("%s %s", spinner[i%len(spinner)], taskDescription)
+			fmt.Print(cursorText)
+			i++
+		}
+	}
 }

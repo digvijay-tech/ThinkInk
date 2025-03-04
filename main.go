@@ -46,7 +46,12 @@ func main() {
 	selections = "\nSelected Model: " + modelName + "\n" + "Selected Skill: " + skillName + "\n" + "Selected Task : " + selectedTask + "\n"
 	ui.PrintHeader(selections)
 
-	task, err := ollama.GenerateTask(modelName, skillName, selectedTask)
+	task, err := ui.ShowLoader(
+		"Generating writing exercise",
+		func() (string, error) {
+			return ollama.GenerateTask(modelName, skillName, selectedTask)
+		},
+	)
 
 	if err != nil {
 		fmt.Println(err)
@@ -55,6 +60,7 @@ func main() {
 	}
 
 	// task received
-	ui.PrintHeader("\nPlease see the task below:\n\n")
+	selections = "\nSelected Model: " + modelName + "\n" + "Selected Skill: " + skillName + "\n" + "Selected Task : " + selectedTask + "\n" + "\nPlease see the task below:\n"
+	ui.PrintHeader(selections)
 	fmt.Println(task)
 }

@@ -23,13 +23,15 @@ type OllamaModel struct {
 
 // Ollama Request structure
 type OllamaRequest struct {
-	Model    string              `json:"model"`
-	Messages []map[string]string `json:"messages"`
+	Model  string `json:"model"`
+	Prompt string `json:"prompt"`
+	Stream bool   `json:"stream"`
 }
 
 // Ollama Response structure
 type OllamaResponse struct {
 	Response string `json:"response"`
+	Done     bool   `json:"done"`
 }
 
 func IsOllamaRunning() bool {
@@ -81,20 +83,19 @@ func GenerateTask(model, skill, taskType string) (string, error) {
 	taskPrompt := fmt.Sprintf(
 		"Create a short writing exercise that helps user practice their %s "+
 			"by writing a short %s. "+
-			"Make sure the task is clear, engaging, and can be completed within 10 minutes.",
+			"Make sure the task is clear, engaging, and can be completed within 10 minutes."+
+			"Do not include samples."+
+			"Do not include timeframe or ask user how much time they should spend on it"+
+			"Provide/Create a scenario where needed",
 		skill,
 		taskType,
 	)
 
 	// preparing api request payload
 	requestBody := OllamaRequest{
-		Model: model,
-		Messages: []map[string]string{
-			{
-				"role":    "user",
-				"content": taskPrompt,
-			},
-		},
+		Model:  model,
+		Prompt: taskPrompt,
+		Stream: false,
 	}
 
 	jsonData, err := json.Marshal(requestBody)
@@ -103,7 +104,7 @@ func GenerateTask(model, skill, taskType string) (string, error) {
 	}
 
 	// sending request to Ollama
-	resp, err := http.Post(url+"api/chat", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(url+"api/generate", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return "", errors.New("Failed to connect to Ollama. Ensure it's running with `ollama serve`")
 	}
@@ -120,7 +121,6 @@ func GenerateTask(model, skill, taskType string) (string, error) {
 
 	var ollamaResp OllamaResponse
 	if err := json.Unmarshal(body, &ollamaResp); err != nil {
-		fmt.Println(err)
 		return "", errors.New("Failed to parse Ollama response")
 	}
 
