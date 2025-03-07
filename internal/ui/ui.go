@@ -8,7 +8,9 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/digvijay-tech/ThinkInk/internal/ollama"
 	"github.com/digvijay-tech/ThinkInk/utils"
+	"github.com/gdamore/tcell/v2"
 	"github.com/manifoldco/promptui"
+	"github.com/rivo/tview"
 )
 
 func PrintHeader(headline string) {
@@ -162,4 +164,38 @@ func ShowLoader(taskDescription string, operation func() (string, error)) (strin
 			i++
 		}
 	}
+}
+
+func GetUserInput(title string) string {
+	app := tview.NewApplication()
+
+	inputField := tview.NewTextArea().
+		SetText("", true).
+		SetPlaceholder("Type your response here... Press Ctrl+S to save or Esc to cancel.")
+
+	flex := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(tview.NewTextView().SetText(fmt.Sprintf("[::b]%s[::-]", title)), 1, 1, false).
+		AddItem(inputField, 0, 1, true)
+
+	// setting key bindings
+	inputField.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Key() {
+		// save and exit on Ctrl+S
+		case tcell.KeyCtrlS:
+			app.Stop()
+		case tcell.KeyEsc:
+			// cancel and exit on esc
+			inputField.SetText("", true) // clearing input
+			app.Stop()
+		}
+
+		return event
+	})
+
+	if err := app.SetRoot(flex, true).Run(); err != nil {
+		panic(err)
+	}
+
+	return inputField.GetText()
 }

@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/digvijay-tech/ThinkInk/internal/ollama"
+	"github.com/digvijay-tech/ThinkInk/internal/pdf"
 	"github.com/digvijay-tech/ThinkInk/internal/ui"
 )
 
@@ -63,4 +65,41 @@ func main() {
 	selections = "\nSelected Model: " + modelName + "\n" + "Selected Skill: " + skillName + "\n" + "Selected Task : " + selectedTask + "\n" + "\nPlease see the task below:\n"
 	ui.PrintHeader(selections)
 	fmt.Println(task)
+
+	// get answer from user
+	userResponse := ui.GetUserInput("Write Your Response:")
+
+	if strings.TrimSpace(userResponse) == "" {
+		fmt.Println("Response Empty\nGood bye!")
+		return
+	}
+
+	fmt.Println("\n✅ Response Captured:")
+	fmt.Println(userResponse)
+
+	// generate feedback
+	ui.PrintHeader("") // no selections display required
+	feedback, err := ui.ShowLoader(
+		"Generating feedback",
+		func() (string, error) {
+			return ollama.EvaluateResponse(modelName, task, userResponse)
+		},
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Failed to receive reponse from Ollama!")
+		return
+	}
+
+	// generating feedback report
+	ui.PrintHeader("")
+	result, err := pdf.GenerateReport(selectedTask, feedback)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	successMsg := fmt.Sprintf("Feedback report is saved at:\n%s", result)
+	ui.PrintHeader(successMsg)
 }
