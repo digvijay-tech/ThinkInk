@@ -66,16 +66,23 @@ func main() {
 	ui.PrintHeader(selections)
 	fmt.Println(task)
 
+	// waiting untill user reads the task
+	fmt.Println("\nRead the task above carefully. When you're ready, press [Enter] to start writing or type 'exit' to quit:")
+	var confirmation string
+	fmt.Scanln(&confirmation)
+
+	if strings.ToLower(strings.TrimSpace(confirmation)) == "exit" {
+		fmt.Println("Goodbye!")
+		return
+	}
+
 	// get answer from user
 	userResponse := ui.GetUserInput("Write Your Response:")
 
 	if strings.TrimSpace(userResponse) == "" {
-		fmt.Println("Response Empty\nGood bye!")
+		fmt.Println("Response is empty\nGood bye!")
 		return
 	}
-
-	fmt.Println("\n✅ Response Captured:")
-	fmt.Println(userResponse)
 
 	// generate feedback
 	ui.PrintHeader("") // no selections display required
