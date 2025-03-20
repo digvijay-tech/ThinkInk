@@ -1,0 +1,40 @@
+{
+  "name": "thinkink-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon",
+    "start": "node ./dist/index.js",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digvijay-tech/ThinkInk.git"
+  },
+  "author": "Digvijaysinh Padhiyar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/digvijay-tech/ThinkInk/issues"
+  },
+  "homepage": "https://github.com/digvijay-tech/ThinkInk#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/morgan": "^1.9.9",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.1.0",
+    "mongoose": "^8.12.1",
+    "morgan": "^1.10.0",
+    "validator": "^13.12.0"
+  }
+}

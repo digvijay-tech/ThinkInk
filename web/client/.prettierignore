@@ -1,0 +1,7 @@
+.next
+node_modules
+README.md
+public
+*.env
+*.json
+*.mjs
