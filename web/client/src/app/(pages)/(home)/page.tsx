@@ -8,7 +8,8 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 // SEO config
 export const metadata: Metadata = {
   title: "ThinkInk | Home",
-  description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta exercitationem ex totam tempore ipsam hic aliquam ab obcaecati deserunt doloremque voluptatibus odio consectetur ullam consequuntur nesciunt, eaque, dolores deleniti accusamus."
+  description:
+    "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta exercitationem ex totam tempore ipsam hic aliquam ab obcaecati deserunt doloremque voluptatibus odio consectetur ullam consequuntur nesciunt, eaque, dolores deleniti accusamus.",
 };
 
 export default function Home() {
@@ -17,12 +18,11 @@ export default function Home() {
       <div className="h-screen container mx-auto py-4 px-3">
         <div className="h-full flex flex-col justify-between">
           <div className="flex-1 flex flex-col items-center justify-center">
-            <h2 className="text-left md:text-center scroll-m-20 mb-4 text-4xl font-extrabold tracking-tight lg:text-5xl select-none">
-              ThinkInk.
-            </h2>
+            <h2 className="text-left md:text-center scroll-m-20 mb-4 text-4xl font-extrabold tracking-tight lg:text-5xl select-none">ThinkInk.</h2>
 
             <p className="w-[80%] md:w-1/2 text-justify md:text-center text-muted-foreground">
-              AI-powered CLI tool for practicing professional writing, critical thinking, and behavioral responses. Get instant writing challenges, AI feedback, and PDF reports—all within your terminal. 🚀✍️
+              AI-powered CLI tool for practicing professional writing, critical thinking, and behavioral responses. Get instant writing challenges, AI feedback,
+              and PDF reports—all within your terminal. 🚀✍️
             </p>
 
             <div className="mt-4 flex flex-col md:flex-row justify-evenly items-center select-none">

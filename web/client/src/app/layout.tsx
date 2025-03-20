@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthProvider } from "@/contexts/auth-context";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -14,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ThinkInk",
-  description: "ThinkInk – AI-powered tool for practicing professional writing, critical thinking, and behavioral responses. Get instant writing challenges, AI feedback, and PDF reports—all within your terminal.",
+  description:
+    "ThinkInk – AI-powered tool for practicing professional writing, critical thinking, and behavioral responses. Get instant writing challenges, AI feedback, and PDF reports—all within your terminal.",
 };
 
 export default function RootLayout({
@@ -24,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Global Auth Context */}
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
