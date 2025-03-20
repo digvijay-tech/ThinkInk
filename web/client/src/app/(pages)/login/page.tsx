@@ -1,3 +1,9 @@
 export default function Login() {
-  return <div>Login Page</div>;
+  return (
+    <main>
+      <div className="h-screen container mx-auto py-4 px-3">
+        
+      </div>
+    </main>
+  );
 }
