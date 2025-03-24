@@ -3,16 +3,17 @@ import { AppBar } from "@/components/appbar/app-bar";
 
 // SEO Config
 export const metadata: Metadata = {
-  title: "Dashboard | ThinkInk",
-  description: "This is ThinkInk Dashboard Page."
-};
+  title: "Account | ThinkInk",
+  description: "This is your ThinkInk Account page."
+}
 
-export default function Dashboard() {
+
+export default function Account() {
   return (
     <main>
       <AppBar />
 
-      <p className="">Dashboard</p>
+      <p className="">Account</p>
     </main>
   );
 }

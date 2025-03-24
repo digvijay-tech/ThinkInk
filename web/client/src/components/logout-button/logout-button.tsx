@@ -4,7 +4,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "../ui/button";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-export function LogoutButton() {
+
+export function LogoutButton({ isIcon }: { isIcon: boolean }) {
   const { setAccount } = useAuth();
 
   const logout = () => {
@@ -16,9 +17,17 @@ export function LogoutButton() {
 
   return (
     <div>
-      <Button onClick={logout} variant="destructive" className="select-none cursor-pointer">
-        <LogoutIcon /> Logout
-      </Button>
+      {
+        (isIcon)
+        ?
+        <Button onClick={logout} variant="outline" size="icon" className="text-red-400 hover:text-red-600 select-none cursor-pointer">
+          <LogoutIcon />
+        </Button>
+        :
+        <Button onClick={logout} variant="outline" className="text-red-400 hover:text-red-600 select-none cursor-pointer">
+          <LogoutIcon /> Logout
+        </Button>
+      }
     </div>
   );
 }
