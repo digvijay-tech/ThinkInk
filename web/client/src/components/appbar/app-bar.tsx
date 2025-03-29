@@ -22,6 +22,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 
 const links = [
     { label: "Dashboard", path: "/dashboard" },
+    { label: "Practice", path: "/practice" },
     { label: "Account", path: "/account" },
 ];
 
@@ -31,8 +32,8 @@ export function AppBar() {
 
     return (
         <Sheet>
-            <div className="py-4 select-none">
-                <div className="container mx-auto flex flex-row items-center justify-between">
+            <div className="py-4 px-2 select-none">
+                <div className="mx-4 md:container md:mx-auto flex flex-row items-center justify-between border-b pb-4">
                     <div className="flex flex-row items-center justify-center">
                         <SheetTrigger asChild>
                             <Button size="icon" variant="outline" className="cursor-pointer">

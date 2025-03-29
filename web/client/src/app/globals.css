@@ -141,3 +141,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* HeatMap Color Customization */
+[data-level="0"] {
+  background-color: #ebedf0 !important;
+}
+
+[data-level="1"] {
+  background-color: #1e272e83 !important;
+}
+
+[data-level="2"] {
+  background-color: #1e272ec9 !important;
+}
+
+[data-level="3"] {
+  background-color: #1e272ece !important;
+}
+
+[data-level="4"] {
+  background-color: #1e272e !important;
+}
+
+/* HeatMap Hiding Contribution Label */
+.contribution-graph__legend-text {
+  visibility: hidden;
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ethers } from "ethers";
 import { useAuth } from "@/contexts/auth-context";
@@ -7,7 +8,9 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogDescription, DialogTitle, DialogFooter, DialogClose } from "../ui/dialog";
 
 export function WalletAuthButton() {
-  const { account, setAccount } = useAuth();
+  const router = useRouter();
+  const { setAuthState } = useAuth();
+  const [account, setAccount] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -47,16 +50,13 @@ export function WalletAuthButton() {
       const signer = await provider.getSigner();
       const message = "Authenticate with ThinkInk";
       const signature: string = await signer.signMessage(message);
-      console.log("Signature:", signature);
+      // console.log("Signature:", signature);
 
       const recoveredAddress = ethers.verifyMessage(message, signature);
       if (recoveredAddress.toLowerCase() === account.toLowerCase()) {
-        console.log("Signature verified!");
+        setAuthState(account, signature);
 
-        // setting cookies for middleware to check auth state
-        document.cookie = `account=${account}; path=/; max-age=3600`; // 1 hour
-        document.cookie = `signature=${signature}; path=/; max-age=3600`; // 1 hour
-        window.location.href = "/dashboard"; // redirect to a protected route
+        router.push("/dashboard");
 
         setOpen(false);
       }

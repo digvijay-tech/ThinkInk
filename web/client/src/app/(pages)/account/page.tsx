@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import { AppBar } from "@/components/appbar/app-bar";
+import { AccountDetails } from "./account-details";
+
 
 // SEO Config
 export const metadata: Metadata = {
@@ -13,7 +15,7 @@ export default function Account() {
     <main>
       <AppBar />
 
-      <p className="">Account</p>
+      <AccountDetails />
     </main>
   );
 }

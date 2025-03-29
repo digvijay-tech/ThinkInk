@@ -1,18 +1,18 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "../ui/button";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 
 export function LogoutButton({ isIcon }: { isIcon: boolean }) {
-  const { setAccount } = useAuth();
+  const router = useRouter();
+  const { removeAuthState } = useAuth();
 
   const logout = () => {
-    setAccount(null);
-    document.cookie = "account=; path=/; max-age=0";
-    document.cookie = "signature=; path=/; max-age=0";
-    window.location.href = "/login";
+    removeAuthState();
+    router.push("/login");
   };
 
   return (
