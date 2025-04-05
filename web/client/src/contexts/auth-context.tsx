@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-
 interface AuthContextType {
   account: string | null;
   signature: string | null;
@@ -31,19 +30,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // storing account and signature in LS to survive hard reload
     localStorage.setItem("auth", JSON.stringify({ account: acc, signature: sign }));
-  }
+  };
 
   // remove authenticated state
   const removeAuthState = () => {
     setAccount(null);
     setSignature(null);
-    
+
     document.cookie = "account=; path=/; max-age=0";
     document.cookie = "signature=; path=/; max-age=0";
 
     // removing auth from LS
     localStorage.removeItem("auth");
-  }
+  };
 
   // reinstate lost authentication state
   useEffect(() => {
@@ -73,7 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   }, [account, signature]);
-
 
   return <AuthContext.Provider value={{ account, signature, isAuthenticated, setAuthState, removeAuthState }}>{children}</AuthContext.Provider>;
 };

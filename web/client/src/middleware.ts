@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ethers } from "ethers";
 
-const privateRoutes = ["/dashboard", "/account"];
+const privateRoutes = ["/dashboard", "/account", "/practice"];
 const publicRoutes = ["/", "/about", "/login"];
 
 export const middleware = async (req: NextRequest) => {
