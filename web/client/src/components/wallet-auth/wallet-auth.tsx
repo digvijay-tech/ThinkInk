@@ -1,11 +1,14 @@
 "use client";
 
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ethers } from "ethers";
+import { ethers, isAddress } from "ethers";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogDescription, DialogTitle, DialogFooter, DialogClose } from "../ui/dialog";
+
+
 
 export function WalletAuthButton() {
   const router = useRouter();
@@ -22,12 +25,16 @@ export function WalletAuthButton() {
         const provider = new ethers.BrowserProvider(window.ethereum);
         const accounts = await provider.send("eth_requestAccounts", []);
 
+        if (!isAddress(accounts[0])) {
+          throw new Error("Invalid Address Detected!");
+        }
+
         setAccount(accounts[0]);
         console.log("Connected account:", accounts[0]);
         setOpen(false);
       } catch (err) {
         console.log(err);
-        setError("Failed to connect wallet");
+        setError("Failed to connect with wallet!");
         setOpen(true);
       }
     } else {
@@ -50,11 +57,18 @@ export function WalletAuthButton() {
       const signer = await provider.getSigner();
       const message = "Authenticate with ThinkInk";
       const signature: string = await signer.signMessage(message);
-      // console.log("Signature:", signature);
+      console.log("Signature:", signature);
+
+      // attempt to login
+      const response = await axios.post("http://localhost:8080/api/authenticate", { wAddr: account });
+
+      if (response.status !== 200) throw new Error(response.data.message);
+      
+      console.log(response.data);
 
       const recoveredAddress = ethers.verifyMessage(message, signature);
       if (recoveredAddress.toLowerCase() === account.toLowerCase()) {
-        setAuthState(account, signature);
+        setAuthState(account, signature, response.data.token, response.data.user.createdAt, response.data.user.lastLogin);
 
         router.push("/dashboard");
 

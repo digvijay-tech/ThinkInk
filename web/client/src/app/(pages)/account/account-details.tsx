@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import moment from "moment";
 import { useAuth } from "@/contexts/auth-context";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
 export function AccountDetails() {
-  const { account } = useAuth();
+  const { account, createdAt, lastLogin } = useAuth();
   const [consent, setConsent] = useState<string>("");
 
   return (
@@ -21,6 +22,16 @@ export function AccountDetails() {
         <div className="">
           <Label htmlFor="accountId">Account ID</Label>
           <Input type="text" value={!account ? "Loading.." : account} disabled className="mt-2 select-none" readOnly />
+        </div>
+
+        <div className="mt-4">
+          <Label htmlFor="accountId">Registered On</Label>
+          <Input type="text" value={!createdAt ? "Loading.." : moment(createdAt).format("DD-MM-YYYY hh:mm:ss a")} disabled className="mt-2 select-none" readOnly />
+        </div>
+
+        <div className="mt-4">
+          <Label htmlFor="accountId">Last Login</Label>
+          <Input type="text" value={!lastLogin ? "Loading.." : moment(lastLogin).format("DD-MM-YYYY hh:mm:ss a")} disabled className="mt-2 select-none" readOnly />
         </div>
 
         <div className="mt-4">

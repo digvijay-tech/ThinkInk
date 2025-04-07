@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ethers } from "ethers";
+import { isJWT } from "validator";
 
 const privateRoutes = ["/dashboard", "/account", "/practice"];
 const publicRoutes = ["/", "/about", "/login"];
@@ -10,13 +11,16 @@ export const middleware = async (req: NextRequest) => {
   // gets account and signature from cookies
   const account = req.cookies.get("account")?.value;
   const signature = req.cookies.get("signature")?.value;
+  const token = req.cookies.get("token")?.value;
   const message = "Authenticate with ThinkInk";
 
   // checks if user is authenticated
   let isAuthenticated = false;
 
-  if (account && signature) {
+  if (account && signature && token) {
     try {
+      if (!isJWT(token)) throw new Error("JWT is invalid!");
+
       const recoveredAddress = ethers.verifyMessage(message, signature);
       isAuthenticated = recoveredAddress.toLowerCase() === account.toLowerCase();
     } catch (err) {

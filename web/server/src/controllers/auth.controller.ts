@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { isAddress } from "ethers";
 import { Users } from "../models/user";
 import { ApiError } from "../utils/errors";
+import { generateAccessToken } from "../services/auth.service";
 
 interface AuthRequestBody {
     wAddr: string;
@@ -13,7 +14,6 @@ interface AuthRequestBody {
  * Authentication is handled on the client with metamask. When client succeeds user document
  * is created if no user found with the same address. If address is already there,then
  * `lastLogin` property is updated.
- *
  *
  * @param {Request} req
  * @param {Response} res
@@ -36,13 +36,25 @@ export const registerOrLoginUser = async (req: Request<{}, any, AuthRequestBody>
         // find if the user exists
         const user = await Users.findOne({ walletAddress: wAddr }).lean();
 
-        // attempt to register the new user in the db
+        // attempt to register the new user
         if (!user) {
-            const result = await Users.create({ walletAddress: wAddr });
+            const newUser = await Users.create({ walletAddress: wAddr });
 
-            if (!result) throw new ApiError("Failed to register user! Please try again later.", 500);
+            if (!newUser) throw new ApiError("Failed to register user! Please try again later.", 500);
 
-            res.status(200).json({ message: "Account Registered!" });
+            // signing access token
+            const accessToken = generateAccessToken({ userId: newUser._id });
+
+            res.status(200).json({
+                message: "Account Registered!", 
+                token: accessToken,
+                user: {
+                    lastLogin: newUser.lastLogin,
+                    createdAt: newUser.createdAt,
+                    updatedAt: newUser.updatedAt,
+                }
+            });
+
             return;
         }
 
@@ -51,7 +63,18 @@ export const registerOrLoginUser = async (req: Request<{}, any, AuthRequestBody>
 
         if (!updated) throw new ApiError("Failed to update last login!", 500);
 
-        res.status(200).json({ message: "Logged in successfully!" });
+        // signing access token
+        const accessToken = generateAccessToken({ userId: updated._id });
+
+        res.status(200).json({
+            message: "Logged-in..", 
+            token: accessToken,
+            user: {
+                lastLogin: updated.lastLogin,
+                createdAt: updated.createdAt,
+                updatedAt: updated.updatedAt,
+            }
+        });
     } catch (error: any) {
         // for known errors
         if (error instanceof ApiError) {
