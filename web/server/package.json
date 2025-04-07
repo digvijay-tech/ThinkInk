@@ -1,11 +1,11 @@
 {
   "name": "thinkink-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "build": "tsc",
     "dev": "nodemon",
-    "start": "node ./dist/index.js",
+    "start": "node ./dist/server.js",
     "format": "prettier --write ."
   },
   "repository": {
@@ -23,6 +23,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/morgan": "^1.9.9",
+    "@types/validator": "^13.12.3",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
@@ -31,6 +32,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "mongoose": "^8.12.1",

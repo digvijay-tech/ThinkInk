@@ -1,12 +1,10 @@
-// root
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import dotenv from "dotenv";
 
-// global .env config
-dotenv.config();
+// modules
+import authRouter from "./routes/auth.routes";
 
 // express app instance
 const app = express();
@@ -18,14 +16,6 @@ app.use(morgan("short"));
 app.use(helmet());
 app.use(cors());
 
-// test route
-app.get("/ping", (req, res) => {
-    res.status(200).json({
-        message: "pong",
-    });
-});
+app.use("/api", authRouter);
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-    console.log("SERVER START!");
-});
+export default app;
