@@ -65,14 +65,8 @@ export const streamTaskResponse = async (req: Request<{}, {}, StreamTaskRequestB
 
         // listening to data receive event
         stream.on("data", (chunk: Buffer) => {
-            const lines = chunk.toString().split("\n").filter(Boolean);
-
-            for (const line of lines) {
-                try {
-                    const json = JSON.parse(line);
-                    res.write(json.response);
-                } catch {} // skipping malformed json
-            }
+            const text = chunk.toString();
+            res.write(text);
         });
 
         // listening to end stream event

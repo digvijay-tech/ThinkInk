@@ -19,6 +19,7 @@ export const generateTask = async (skill: string, task: string): Promise<Readabl
         - Do not introduce or justify the task before presenting it.
         - Only return the final structured response.
         - Do not use any html or markdown markup.
+        - Do not add any indentation or space formatting.
         - Output format:
         Task Title: Start and end the title with '' (e.g., 'Persuasive Email to a Client')
         Brief Task Description: A short paragraph explaining what the user needs to do.

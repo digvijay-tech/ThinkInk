@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { escape } from "validator";
-import { fakeStreamResponse } from "./actions";
+import { streamTaskResponse } from "./actions";
 import { AppBar } from "@/components/appbar/app-bar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,16 +49,19 @@ export default function PracticeTest() {
     }
   }, [skill, task]);
 
-  // simulating stream of response from server
+  // stream of response from server
   useEffect(() => {
     (async function () {
       setIsLoading(true);
-
-      await fakeStreamResponse(setGeneratedTask);
-
+      if (!skill || !task) return;
+      try {
+        await streamTaskResponse(skill, task, setGeneratedTask);
+      } catch (e) {
+        console.error("Streaming error:", e);
+      }
       setIsLoading(false);
     })();
-  }, []);
+  }, [skill, task]);
 
   // missing skill or task from query param
   if (!skill || !task) {
@@ -104,7 +107,7 @@ export default function PracticeTest() {
                 {task}
               </p>
 
-              <p className="">{generatedTask}</p>
+              <p className="whitespace-pre-line text-justify">{generatedTask}</p>
             </ScrollArea>
           </div>
 
