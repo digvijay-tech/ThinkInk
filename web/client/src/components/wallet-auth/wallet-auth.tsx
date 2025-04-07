@@ -8,8 +8,6 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogDescription, DialogTitle, DialogFooter, DialogClose } from "../ui/dialog";
 
-
-
 export function WalletAuthButton() {
   const router = useRouter();
   const { setAuthState } = useAuth();
@@ -63,7 +61,7 @@ export function WalletAuthButton() {
       const response = await axios.post("http://localhost:8080/api/authenticate", { wAddr: account });
 
       if (response.status !== 200) throw new Error(response.data.message);
-      
+
       console.log(response.data);
 
       const recoveredAddress = ethers.verifyMessage(message, signature);

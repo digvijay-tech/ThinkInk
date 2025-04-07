@@ -51,7 +51,7 @@ export default function PracticeTest() {
 
   // simulating stream of response from server
   useEffect(() => {
-     (async function() {
+    (async function () {
       setIsLoading(true);
 
       await fakeStreamResponse(setGeneratedTask);
@@ -91,13 +91,9 @@ export default function PracticeTest() {
           {/* Task */}
           <div className="w-full py-3 px-3 rounded-md border select-none">
             <div className="flex flex-row justify-between items-center">
-              <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                Task Details
-              </h3>
+              <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">Task Details</h3>
 
-              <div>
-                {isLoading && <Loader2 className="animate-spin text-gray-400" />}
-              </div>
+              <div>{isLoading && <Loader2 className="animate-spin text-gray-400" />}</div>
             </div>
 
             <Separator className="mt-3" />
@@ -108,10 +104,7 @@ export default function PracticeTest() {
                 {task}
               </p>
 
-              
-              <p className="">
-                {generatedTask}
-              </p>
+              <p className="">{generatedTask}</p>
             </ScrollArea>
           </div>
 
@@ -119,12 +112,10 @@ export default function PracticeTest() {
 
           {/* Input Field */}
           <div className="w-full py-3 px-2 rounded-md border">
-            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">
-              Your Answer
-            </h3>
+            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight select-none">Your Answer</h3>
 
             <Separator className="mt-3" />
-            
+
             <div className="h-[300px] lg:h-[95%]">
               <Textarea
                 className="h-full resize-none border-none shadow-none"
@@ -140,11 +131,7 @@ export default function PracticeTest() {
         {/* Actions */}
         <div className="text-center mt-6 flex flex-col md:flex-row justify-center items-center select-none">
           <div className="w-full md:w-max">
-            <Button 
-              onClick={handleCancel}
-              variant="secondary" 
-              className="w-full cursor-pointer"
-            >
+            <Button onClick={handleCancel} variant="secondary" className="w-full cursor-pointer">
               Cancel
             </Button>
           </div>
@@ -152,11 +139,7 @@ export default function PracticeTest() {
           <div className="h-4 w-4"></div>
 
           <div className="w-full md:w-max">
-            <Button 
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="w-full cursor-pointer"
-            >
+            <Button onClick={handleSubmit} disabled={isLoading} className="w-full cursor-pointer">
               Submit
             </Button>
           </div>

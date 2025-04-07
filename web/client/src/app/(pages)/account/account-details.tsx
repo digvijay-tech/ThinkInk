@@ -26,12 +26,24 @@ export function AccountDetails() {
 
         <div className="mt-4">
           <Label htmlFor="accountId">Registered On</Label>
-          <Input type="text" value={!createdAt ? "Loading.." : moment(createdAt).format("DD-MM-YYYY hh:mm:ss a")} disabled className="mt-2 select-none" readOnly />
+          <Input
+            type="text"
+            value={!createdAt ? "Loading.." : moment(createdAt).format("DD-MM-YYYY hh:mm:ss a")}
+            disabled
+            className="mt-2 select-none"
+            readOnly
+          />
         </div>
 
         <div className="mt-4">
           <Label htmlFor="accountId">Last Login</Label>
-          <Input type="text" value={!lastLogin ? "Loading.." : moment(lastLogin).format("DD-MM-YYYY hh:mm:ss a")} disabled className="mt-2 select-none" readOnly />
+          <Input
+            type="text"
+            value={!lastLogin ? "Loading.." : moment(lastLogin).format("DD-MM-YYYY hh:mm:ss a")}
+            disabled
+            className="mt-2 select-none"
+            readOnly
+          />
         </div>
 
         <div className="mt-4">
