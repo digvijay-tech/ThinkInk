@@ -46,13 +46,13 @@ export const registerOrLoginUser = async (req: Request<{}, any, AuthRequestBody>
             const accessToken = generateAccessToken({ userId: newUser._id });
 
             res.status(200).json({
-                message: "Account Registered!", 
+                message: "Account Registered!",
                 token: accessToken,
                 user: {
                     lastLogin: newUser.lastLogin,
                     createdAt: newUser.createdAt,
                     updatedAt: newUser.updatedAt,
-                }
+                },
             });
 
             return;
@@ -67,13 +67,13 @@ export const registerOrLoginUser = async (req: Request<{}, any, AuthRequestBody>
         const accessToken = generateAccessToken({ userId: updated._id });
 
         res.status(200).json({
-            message: "Logged-in..", 
+            message: "Logged-in..",
             token: accessToken,
             user: {
                 lastLogin: updated.lastLogin,
                 createdAt: updated.createdAt,
                 updatedAt: updated.updatedAt,
-            }
+            },
         });
     } catch (error: any) {
         // for known errors

@@ -5,6 +5,7 @@ import helmet from "helmet";
 
 // modules
 import authRouter from "./routes/auth.routes";
+import modelRouter from "./routes/ai-model.routes";
 
 // express app instance
 const app = express();
@@ -17,5 +18,6 @@ app.use(helmet());
 app.use(cors());
 
 app.use("/api", authRouter);
+app.use("/api", modelRouter);
 
 export default app;
