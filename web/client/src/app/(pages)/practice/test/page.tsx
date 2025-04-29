@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { escape } from "validator";
-import { streamTaskResponse } from "./actions";
+import { streamTaskResponse, streamFeedbackResponse } from "./actions";
 import { AppBar } from "@/components/appbar/app-bar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 
 export default function PracticeTest() {
@@ -18,6 +19,7 @@ export default function PracticeTest() {
   const task = searchParams.get("task")?.trim();
   const [generatedTask, setGeneratedTask] = useState("");
   const [answer, setAnswer] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // handle submit
@@ -27,27 +29,32 @@ export default function PracticeTest() {
     // cleaning the answer
     setAnswer(answer.trim());
     const sanitizedAnswer = escape(answer);
-    console.log(sanitizedAnswer);
 
-    setIsLoading(false);
-    setAnswer("");
+    try {
+      await streamFeedbackResponse(generatedTask, sanitizedAnswer);
+
+      setError("");
+      setIsLoading(false);
+      setAnswer("");
+    } catch (error) {
+      console.error(error);
+
+      if (typeof error === "string") {
+        setError(error);
+      } else if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Something went wrong!!");
+      }
+
+      setIsLoading(false);
+    }
   };
 
   // handle cancellation
-  const handleCancel = async () => {};
-
-  // on load
-  useEffect(() => {
-    if (skill && task) {
-      const payload = {
-        skill: skill,
-        task: task,
-      };
-
-      console.log("Ready to make API call!");
-      console.log("Payload:", payload);
-    }
-  }, [skill, task]);
+  const handleCancel = async () => {
+    location.replace("/dashboard");
+  };
 
   // stream of response from server
   useEffect(() => {
@@ -58,7 +65,16 @@ export default function PracticeTest() {
         await streamTaskResponse(skill, task, setGeneratedTask);
       } catch (e) {
         console.error("Streaming error:", e);
+
+        if (typeof e === "string") {
+          setError(e);
+        } else if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("Something went wrong!");
+        }
       }
+
       setIsLoading(false);
     })();
   }, [skill, task]);
@@ -90,6 +106,14 @@ export default function PracticeTest() {
       <AppBar />
 
       <div className="h-full lg:h-9/11 mx-6 my-4 md:container md:mx-auto">
+        {/* Error */}
+        {error && (
+          <Alert variant="destructive" className="mb-3">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <div className="h-full flex flex-col lg:flex-row">
           {/* Task */}
           <div className="w-full py-3 px-3 rounded-md border select-none">

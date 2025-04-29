@@ -2,35 +2,66 @@
 
 import { useEffect, useState } from "react";
 import { ReactGithubHeatmap } from "@ahmaddzidnii/react-github-heatmap";
+import axiosInstace from "@/axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type HeatMapData = {
   date: string;
   contributions: number;
 };
 
-// dummy data
-const generateData = () => {
-  const data = [];
-
-  data.push({ date: "2025-03-24", contributions: 1 });
-  data.push({ date: "2025-03-25", contributions: 2 });
-  data.push({ date: "2025-03-26", contributions: 0 });
-  data.push({ date: "2025-03-27", contributions: 3 });
-  data.push({ date: "2025-03-28", contributions: 0 });
-  data.push({ date: "2025-03-29", contributions: 1 });
-
-  return data;
-};
-
 export function Heatmap() {
   const [data, setData] = useState<HeatMapData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const generated = generateData();
-    setData(generated);
+    setLoading(true);
+
+    (async function () {
+      try {
+        const res = await axiosInstace.get("/api/stats");
+
+        if (res.status !== 200) {
+          throw new Error("Failed to load stats!");
+        }
+
+        // normalizing streaks
+        const original: HeatMapData[] = res.data.streaks;
+
+        if (original.length < 1) {
+          setData([]);
+        } else {
+          const newStreaks = original.map((streak) => {
+            return {
+              date: streak.date.split("T")[0],
+              contributions: 3,
+            };
+          });
+
+          setData(newStreaks);
+        }
+        console.log(original[0].date.split("T")[0]);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+
+    setLoading(false);
   }, []);
 
-  if (data.length === 0) return null; // or a loading spinner
+  if (loading) {
+    return (
+      <div className="mt-2 flex items-center justify-left w-full">
+        <div className="flex items-center justify-stretch space-x-4 w-full">
+          <div className="space-y-2 w-full">
+            <Skeleton className="h-8 w-[100%]" />
+            <Skeleton className="h-8 w-[100%]" />
+            <Skeleton className="h-8 w-[70%]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-2 flex items-center justify-left">
@@ -38,10 +69,10 @@ export function Heatmap() {
         data={data}
         tooltipContent={(t) => {
           if (!t.contributions) {
-            return `No contributions on ${t.date}`;
+            return `No attempt on ${t.date}`;
           }
 
-          return `${t.contributions} contributions on ${t.date}`;
+          return `${t.date}`;
         }}
         tooltipOptions={{
           place: "top",

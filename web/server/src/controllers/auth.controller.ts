@@ -66,6 +66,46 @@ export const registerOrLoginUser = async (req: Request<{}, any, AuthRequestBody>
         // signing access token
         const accessToken = generateAccessToken({ userId: updated._id });
 
+        // inserting new streak if it is not present
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const todayStreaks = updated.streaks.find((streak) => {
+            const streakDate = new Date(streak.date);
+            streakDate.setHours(0, 0, 0, 0);
+            return streakDate.getTime() === today.getTime();
+        });
+
+        if (!todayStreaks) {
+            const sterakUpdate = await Users.findByIdAndUpdate(
+                { _id: updated._id },
+                {
+                    $push: {
+                        streaks: {
+                            date: today,
+                            contributions: 1,
+                        },
+                    },
+                },
+                { new: true },
+            );
+
+            if (!sterakUpdate) throw new ApiError("Failed to update last login!", 500);
+
+            res.status(200).json({
+                message: "Logged-in..",
+                token: accessToken,
+                user: {
+                    lastLogin: sterakUpdate.lastLogin,
+                    createdAt: sterakUpdate.createdAt,
+                    updatedAt: sterakUpdate.updatedAt,
+                },
+            });
+
+            return;
+        }
+
+        //  default when streak is already there
         res.status(200).json({
             message: "Logged-in..",
             token: accessToken,

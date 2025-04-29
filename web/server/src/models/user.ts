@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export interface IStreaks {
     date: Date;
-    count: number;
+    contributions: number;
 }
 
 export interface IUser {
@@ -34,7 +34,7 @@ const userSchema = new Schema<IUser>(
                     type: Date,
                     default: Date.now,
                 },
-                count: {
+                contributions: {
                     type: Number,
                     required: true,
                     min: 0,
